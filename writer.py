@@ -48,10 +48,10 @@ class writer(object):
 
         self.port.write(towrite)
         print 'wrote a packet: '
-    	# print 'address = {}'.format(self.address[0])
-    	# print 'command = {}'.format(self.command[0])
-    	# print 'data = {}'.format(self.data[0])
-    	# print 'checksum = {}\n'.format(self.checksum[0])
+    	print 'address = {}'.format(self.address[0])
+    	print 'command = {}'.format(self.command[0])
+    	print 'data = {}'.format(self.data[0])
+    	print 'checksum = {}\n'.format(self.checksum[0])
 
     def compute_checksum(self):
         self.checksum = bytearray([(self.address[0] + self.command[0] +  \
