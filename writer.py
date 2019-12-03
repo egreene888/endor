@@ -69,17 +69,17 @@ class writer(object):
             assert(-128 < vel and 128 > vel)
         except TypeError, AssertionError:
             print 'That is not a valid input'
-        if vel == 0:
+        if vel == 0: # stop case
             self.command[0] = 8
             self.data[0] = 0
 
-        elif vel > 0:
+        elif vel > 0: # forwards case
             self.command[0] = 8
             self.data[0] = vel
 
         elif vel < 0: # backwards case
             self.command[0] = 9
-            self.data[0] = abs(data)
+            self.data[0] = abs(vel)
 
         self.write()
 
