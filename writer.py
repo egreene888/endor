@@ -389,7 +389,7 @@ class simplified_serial_writer(object):
 
 if __name__ == '__main__':
     # controller = writer()
-    controller = simplified_serial_writer()
+    controller = writer()
     controller.test()
 
 
