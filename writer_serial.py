@@ -33,29 +33,29 @@ class writer(object):
             print "Opened Port"
 
     def write(self):
-	"""calculates the values to send to the left and right motors
-	then sends those values.
-	"""
-	"""
-	Motor 1 -- 1 	is full reverse,  64 is stop, and 127 is full forward
-	Motor 2 -- 128 	is full reverse, 192 is stop, and 255 is full forward
-	Sending a value of zero stops both motors.
-	"""
-	# stop condition
-	if not(self.linear_vel or self.angular_vel):
-	    self.left_vel = 0
-	    self.right_vel = 0
-	else:
-	    # left motor is motor1
-	    self.left_vel = (self.linear_vel - self.angular_vel) / 2 + 1
-	    self.right_vel = (self.linear_vel + self.angular_vel) / 2 + 128
+    """calculates the values to send to the left and right motors
+    then sends those values.
+    """
+    """
+    Motor 1 -- 1 	is full reverse,  64 is stop, and 127 is full forward
+    Motor 2 -- 128 	is full reverse, 192 is stop, and 255 is full forward
+    Sending a value of zero stops both motors.
+    """
+    # stop condition
+    if not(self.linear_vel or self.angular_vel):
+        self.left_vel = 0
+        self.right_vel = 0
+    else:
+        # left motor is motor1
+        self.left_vel = (self.linear_vel - self.angular_vel) / 2 + 1
+        self.right_vel = (self.linear_vel + self.angular_vel) / 2 + 128
 
     towrite = bytes([self.left_vel, self.right_vel])
-	self.port.write(towrite)
+    self.port.write(towrite)
 
-	print("Commanded velocities")
-	print("Left: {}".format(self.left_vel))
-	print("Right: {}".format(self.right_vel))
+    print("Commanded velocities")
+    print("Left: {}".format(self.left_vel))
+    print("Right: {}".format(self.right_vel))
 
     def send_linear_vel(self, vel):
         """
@@ -70,8 +70,8 @@ class writer(object):
         except TypeError, AssertionError:
             print 'That is not a valid input'
 
-	# all that's needed is to command the velocity.
-	self.linear_vel = vel
+    # all that's needed is to command the velocity.
+    self.linear_vel = vel
     self.write()
 
     def send_angular_vel(self, vel):
@@ -87,20 +87,20 @@ class writer(object):
         except TypeError, AssertionError:
             print "That is not a valid input"
 
-	# all that's needed is to command the velocity
-	self.angular_vel = vel
-	self.write()
+    # all that's needed is to command the velocity
+    self.angular_vel = vel
+    self.write()
 
     def stop(self):
-		"""
-		There are two ways to stop -- send values of 64 and 192 to
-		motors 1 and 2, respectively, or send a value of zero.
-		This method does both.
-		"""
+        """
+        There are two ways to stop -- send values of 64 and 192 to
+        motors 1 and 2, respectively, or send a value of zero.
+        This method does both.
+        """
         self.send_linear_vel(0)
         self.send_angular_vel(0)
 
-		self.port.write(bytes([0]))
+        self.port.write(bytes([0]))
 
 
 if __name__ == "__main__":
