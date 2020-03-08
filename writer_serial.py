@@ -9,7 +9,7 @@ For use commanding a Sabertooth 2x5 in simplified serial mode.
 """
 import serial, time
 
-
+ENABLE_LOGGING = False
 
 class writer(object):
 
@@ -29,8 +29,6 @@ class writer(object):
                 bytesize = serial.EIGHTBITS,
                 parity = serial.PARITY_NONE,
                 stopbits = serial.STOPBITS_ONE)
-        if ENABLE_LOGGING:
-            print "Opened Port"
 
     def write(self):
         """calculates the values to send to the left and right motors
