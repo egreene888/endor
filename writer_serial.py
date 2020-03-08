@@ -30,6 +30,12 @@ class writer(object):
                 parity = serial.PARITY_NONE,
                 stopbits = serial.STOPBITS_ONE)
 
+        # initialize the values of angular_vel and linear_vel
+        self.linear_vel = 0
+        self.angular_vel = 0
+        self.right_vel = 0
+        self.left_vel = 0
+
     def write(self):
         """calculates the values to send to the left and right motors
         then sends those values.
