@@ -70,9 +70,9 @@ class writer(object):
         except TypeError, AssertionError:
             print 'That is not a valid input'
 
-    # all that's needed is to command the velocity.
-    self.linear_vel = vel
-    self.write()
+        # all that's needed is to command the velocity.
+        self.linear_vel = vel
+        self.write()
 
     def send_angular_vel(self, vel):
         """
@@ -87,9 +87,9 @@ class writer(object):
         except TypeError, AssertionError:
             print "That is not a valid input"
 
-    # all that's needed is to command the velocity
-    self.angular_vel = vel
-    self.write()
+        # all that's needed is to command the velocity
+        self.angular_vel = vel
+        self.write()
 
     def stop(self):
         """
