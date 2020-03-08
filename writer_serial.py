@@ -51,8 +51,8 @@ class writer(object):
             self.right_vel = 0
         else:
             # left motor is motor1
-            self.left_vel = (self.linear_vel - self.angular_vel) / 2 + 1
-            self.right_vel = (self.linear_vel + self.angular_vel) / 2 + 128
+            self.left_vel = (self.linear_vel - self.angular_vel) + 64
+            self.right_vel = (self.linear_vel + self.angular_vel)  + 192
 
         towrite = bytes([self.left_vel, self.right_vel])
         self.port.write(towrite)
@@ -63,14 +63,14 @@ class writer(object):
 
     def send_linear_vel(self, vel):
         """
-        Takes a velocity as a signed integer between -127 and 127.
+        Takes a velocity as a signed integer between -63 and 63.
         Negative values are backwards, zero is stop, and positive values
         are forward.
         """
         # the type checking is somewhat rudimentary.
         try:
             vel = int(vel)
-            assert(-128 < vel and 128 > vel)
+            assert(-64 < vel and 64 > vel)
         except TypeError, AssertionError:
             print 'That is not a valid input'
 
@@ -80,7 +80,7 @@ class writer(object):
 
     def send_angular_vel(self, vel):
         """
-        takes an angular velocity as a signed integer in the range (-127, 127).
+        takes an angular velocity as a signed integer in the range (-63, 63).
         Negative results are right, zero is stop and positive values are
         left turns.
         """
@@ -101,8 +101,8 @@ class writer(object):
         motors 1 and 2, respectively, or send a value of zero.
         This method does both.
         """
-        self.send_linear_vel(0)
-        self.send_angular_vel(0)
+        self.linear_vel = 0
+        self.angular_vel = 0
 
         self.port.write(bytes([0]))
 
