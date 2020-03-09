@@ -110,7 +110,12 @@ class writer(object):
 def main():
     controller = writer()
     controller.send_linear_vel(10)
-    time.sleep(5)
+    time.sleep(2)
+    controller.send_linear_vel(20)
+    time.sleep(2)
+    controller.send_linear_vel(10)
+    controller.send_angular_vel(10)
+    time.sleep(2)
     controller.stop()
 
 if __name__ == "__main__":
