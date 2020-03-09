@@ -54,10 +54,8 @@ class writer(object):
             self.left_vel = (self.linear_vel - self.angular_vel) + 64
             self.right_vel = (self.linear_vel + self.angular_vel)  + 192
 
-        towrite = bytes([self.left_vel, self.right_vel])
-        for elt in towrite:
-            self.port.write(elt)
-
+        self.port.write([self.left_vel])
+        self.port.write([self.right_vel])
         print("Commanded velocities")
         print("Left: {}".format(self.left_vel))
         print("Right: {}".format(self.right_vel))
