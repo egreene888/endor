@@ -55,7 +55,8 @@ class writer(object):
             self.right_vel = (self.linear_vel + self.angular_vel)  + 192
 
         towrite = bytes([self.left_vel, self.right_vel])
-        self.port.write(towrite)
+        for elt in towrite:
+            self.port.write(elt)
 
         print("Commanded velocities")
         print("Left: {}".format(self.left_vel))
@@ -103,12 +104,16 @@ class writer(object):
         """
         self.linear_vel = 0
         self.angular_vel = 0
+        self.write()
 
-        self.port.write(bytes([0]))
+        # if that doesn't work this will.
+        self.port.write([0])
 
-
-if __name__ == "__main__":
+def main():
     controller = writer()
     controller.send_linear_vel(10)
     time.sleep(5)
     controller.stop()
+
+if __name__ == "__main__":
+    main()
