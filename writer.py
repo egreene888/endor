@@ -367,7 +367,7 @@ class simplified_serial_writer(object):
         self.stop1()
         self.stop2()
 
-    def self.test():
+    def test(self):
         """
         Has the robot slowly spin one wheel, then the other
         """
