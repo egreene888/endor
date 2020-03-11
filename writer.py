@@ -83,9 +83,7 @@ class writer(object):
 
         towrite = bytearray()
         for elt in [self.address, self.command, self.data, self.checksum]:
-            towrite.extend(elt)
-
-        self.port.write(towrite)
+            self.port.write([elt])
 
         if ENABLE_LOGGING:
             print 'wrote a packet: '
