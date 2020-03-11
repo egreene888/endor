@@ -42,16 +42,43 @@ class writer(object):
         if ENABLE_LOGGING:
             print "Wrote first byte"
 
-        # time.sleep(2)
+        # initialize values for each of the parameters.
+
         # start by commanding zero values for each motor
-        # address byte will always be 128, unless addressing multiple
-        # controllers using the same line.
-        # self.address = bytearray([128])
-        # # zero command tells motor 1 to go forwards
-        # self.command = bytearray([14])
-        # # We want to tell the motor not to move.
-        # self.data = bytearray([20])
-        # self.checksum = bytearray([0])
+        """
+        Address byte will always be 128, unless addressing multiple
+        controllers using the same line. Would use a static var, but there's
+        no such thing in Python.
+        """
+        self.address = bytearray([128])
+
+        """
+        The list of potential commands is
+        0   -   Drive motor 1 forwards
+        1   -   Drive motor 1 backwards
+        2   -   Set a minimum voltage for the battery
+        3   -   set a maximum voltage for the battery
+        4   -   Drive motor 2 forwards
+        5   -   Drive motor 2 backwards
+        6   -   Drive motor 1 (7 bit)
+                    1 for full reverse, 64 for stop, 127 for full forwards
+        7   -   Drive motor 2 (7 bit)
+        8   -   Drive forwards mixed mode
+        9   -   Drive backwards mixed mode
+        10  -   Turn right mixed mode
+        11  -   Turn left mixed mode
+        12  -   Drive forwards/backwards mixed mode
+                    1 for full reverse, 64 for stop, 127 for full forwards
+        13  -   Turn 7 bit
+                    1 for full left, 64 for dead straight, and 127 for full right
+        """
+        # tell the motor to drive forwards at zero speed
+        self.command = bytearray([8])
+        # We want to tell the motor not to move.
+        self.data = bytearray([0])
+        # no need to calculate checksum, it's done automatically in the write
+        # command 
+        self.checksum = bytearray([0])
 
         self.write()
 
