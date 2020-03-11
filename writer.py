@@ -36,7 +36,7 @@ class writer(object):
         time.sleep(2)
 
         # doing it once doesn't work. Let's try a bunch times.
-        # self.port.write(bytearray([0xAA]))
+        self.port.write(bytearray([0xAA]))
 
         time.sleep(0.1)
         if ENABLE_LOGGING:
@@ -46,12 +46,12 @@ class writer(object):
         # start by commanding zero values for each motor
         # address byte will always be 128, unless addressing multiple
         # controllers using the same line.
-        self.address = bytearray([128])
-        # zero command tells motor 1 to go forwards
-        self.command = bytearray([14])
-        # We want to tell the motor not to move.
-        self.data = bytearray([20])
-        self.checksum = bytearray([0])
+        # self.address = bytearray([128])
+        # # zero command tells motor 1 to go forwards
+        # self.command = bytearray([14])
+        # # We want to tell the motor not to move.
+        # self.data = bytearray([20])
+        # self.checksum = bytearray([0])
 
         self.write()
 
@@ -73,6 +73,15 @@ class writer(object):
 
         self.stop_motor2()
 
+        self.send_linear_vel(20)
+
+        time.sleep(2)
+
+        self.stop()
+
+        self.send_angular_vel(20)
+
+        self.stop()
         return
 
     def write(self):
@@ -81,7 +90,6 @@ class writer(object):
 
         self.compute_checksum()
 
-        towrite = bytearray()
         for elt in [self.address, self.command, self.data, self.checksum]:
             self.port.write([elt])
 
