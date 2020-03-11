@@ -36,7 +36,7 @@ class writer(object):
         time.sleep(2)
 
         # doing it once doesn't work. Let's try a bunch times.
-        self.port.write(bytearray([0xAA]))
+        self.port.write([0xAA])
 
         time.sleep(0.1)
         if ENABLE_LOGGING:
@@ -50,7 +50,7 @@ class writer(object):
         controllers using the same line. Would use a static var, but there's
         no such thing in Python.
         """
-        self.address = bytearray([128])
+        self.address = [128]
 
         """
         The list of potential commands is
@@ -73,12 +73,12 @@ class writer(object):
                     1 for full left, 64 for dead straight, and 127 for full right
         """
         # tell the motor to drive forwards at zero speed
-        self.command = bytearray([8])
+        self.command = [8]
         # We want to tell the motor not to move.
-        self.data = bytearray([0])
+        self.data = [0]
         # no need to calculate checksum, it's done automatically in the write
-        # command 
-        self.checksum = bytearray([0])
+        # command
+        self.checksum = [0]
 
         self.write()
 
@@ -117,8 +117,10 @@ class writer(object):
 
         self.compute_checksum()
 
-        for elt in [self.address, self.command, self.data, self.checksum]:
-            self.port.write([elt])
+        self.port.write(self.address)
+        self.port.write(self.command)
+        self.port.write(self.data)
+        self.port.write(self.checksum)
 
         if ENABLE_LOGGING:
             print 'wrote a packet: '
@@ -130,8 +132,8 @@ class writer(object):
         return
 
     def compute_checksum(self):
-        self.checksum = bytearray([(self.address[0] + self.command[0] +  \
-            self.data[0]) & 0b01111111 ])
+        self.checksum = [(self.address[0] + self.command[0] +  \
+            self.data[0]) & 0b01111111 ]
 
 
         # if ENABLE_LOGGING:
@@ -296,7 +298,7 @@ class simplified_serial_writer(object):
 
         vel += 64
 
-        self.write(bytearray([vel | 0b10000000]))
+        self.write([vel | 0b10000000]
 
         return
 
@@ -323,7 +325,7 @@ class simplified_serial_writer(object):
 
         vel += 64
 
-        self.write(bytearray([vel & 0b01111111]))
+        self.write([vel & 0b01111111])
 
         return
 
