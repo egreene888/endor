@@ -298,7 +298,7 @@ class simplified_serial_writer(object):
 
         vel += 64
 
-        self.write([vel | 0b10000000]
+        self.write([vel | 0b10000000])
 
         return
 
