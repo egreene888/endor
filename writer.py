@@ -313,8 +313,8 @@ class simplified_serial_writer(object):
         writes the command to the port
         """
         self.port.write(towrite)
-		if ENABLE_LOGGING:
-			print("Wrote a byte: {}".format(int(towrite)))
+        if ENABLE_LOGGING:
+            print("Wrote a byte: {}".format(int(towrite)))
 
         return
 
@@ -367,30 +367,30 @@ class simplified_serial_writer(object):
         self.stop1()
         self.stop2()
 
-	def self.test():
-		"""
-		Has the robot slowly spin one wheel, then the other
-		"""
-		vel = 10
+    def self.test():
+        """
+        Has the robot slowly spin one wheel, then the other
+        """
+        vel = 10
 
-		self.send1(vel)
-		if ENABLE_LOGGING:
-			print("spinning right wheel")
+        self.send1(vel)
+        if ENABLE_LOGGING:
+            print("spinning right wheel")
 
-		time.sleep(1.5)
+        time.sleep(1.5)
 
-		self.stop1()
-		if ENABLE_LOGGING:
-			print("stopped right wheel")
+        self.stop1()
+        if ENABLE_LOGGING:
+            print("stopped right wheel")
 
-		self.send2(vel)
-		if ENABLE_LOGGING:
-			print("spinning left wheel")
+        self.send2(vel)
+        if ENABLE_LOGGING:
+            print("spinning left wheel")
 
-		time.sleep(1.5)
-		self.stop2()
-		if ENABLE_LOGGING:
-			print("stopped left wheel")
+        time.sleep(1.5)
+        self.stop2()
+        if ENABLE_LOGGING:
+            print("stopped left wheel")
 
 
 if __name__ == '__main__':
