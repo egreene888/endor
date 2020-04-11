@@ -108,19 +108,45 @@ class writer(object):
 		# if that doesn't work this will.
 		self.port.write([0])
 
+	def ramp_linear(self, vel, rampTime):
+		"""
+		Ramps the linear velocity from the current level to the desired level
+		over the time specified as the input (in seconds).
+		"""
+		if vel > self.linear_vel:
+			velocities = range(self.linear_vel, vel)
+		else:
+			velocities = range(self.linear_vel, vel, -1)
+
+		for velocity in velocities:
+			self.send_linear_vel(velocity)
+			time.sleep(rampTime / len(velocities))
+		return
+
+	def ramp_angular(self, vel, rampTime):
+		"""
+		Ramps the linear velocity from the current level to the desired level
+		over the time specified as the input (in seconds).
+		"""
+		if vel > self.angular_vel:
+			velocities = range(self.angular_vel, vel)
+		else:
+			velocities = range(self.angular_vel, vel, -1)
+		print(velocities)
+		for velocity in velocities:
+			self.send_angular_vel(velocity)
+			time.sleep(rampTime / len(velocities))
+		return
+
 def main():
-	print("Accellerating")
+	print("Accelerating")
 	controller = writer()
-	for i in range(64):
-		controller.send_linear_vel(i)
-		time.sleep(0.05)
+	controller.ramp_angular(64, 2)
+	print("Constant velocity")
 	time.sleep(2)
 
-
-	print("Decellerating")
-	for i in range(63, 0):
-		controller.send_linear_vel(i)
-		time.sleep(0.05)
+	print("Decelerating")
+	controller.ramp_angular(0, 2)
 	time.sleep(2)
 
 	print("Stopping")
