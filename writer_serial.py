@@ -5,8 +5,12 @@ Written by Evan Greene
 2019-12-02
 
 For use commanding a Sabertooth 2x5 in simplified serial mode.
-
+Subscribes to the geometry_msgs.msg.Twist ROS topic and uses that to control
+the robot.
 """
+import rospy
+from geometry_msgs.msg import Twist
+
 import serial, time
 
 ENABLE_LOGGING = False
@@ -36,6 +40,19 @@ class writer(object):
 		self.right_vel = 0
 		self.left_vel = 0
 
+		# Write initial data
+		self.write()
+
+		# create the rospy subscriber.
+		rospy.Subscriber('key_vel', Twist, self.update_vel)
+
+	def update_vel(self, msg):
+		msg.angular.z *= -1
+		self.send_linear_vel(int(0.5 * 127 * msg.linear.x))
+		self.send_angular_vel(0.5 * 127 * msg.angular.z)
+		self.write()
+
+
 	def write(self):
 		"""calculates the values to send to the left and right motors
 		then sends those values.
@@ -57,9 +74,9 @@ class writer(object):
 		self.port.write([self.left_vel])
 		self.port.write([self.right_vel])
 		if ENABLE_LOGGING:
-			print("Commanded velocities")
-			print("Left: {}".format(self.left_vel))
-			print("Right: {}".format(self.right_vel))
+			rospy.loginfo("Commanded velocities: ")
+			rospy.loginfo("Left: {}".format(self.left_vel))
+			rospy.loginfo("Right: {}".format(self.right_vel))
 
 	def send_linear_vel(self, vel):
 		"""
@@ -132,11 +149,13 @@ class writer(object):
 			velocities = range(self.angular_vel, vel)
 		else:
 			velocities = range(self.angular_vel, vel, -1)
-		print(velocities)
 		for velocity in velocities:
 			self.send_angular_vel(velocity)
 			time.sleep(rampTime / len(velocities))
 		return
+
+	def run(self):
+		rospy.spin()
 
 def main():
 	print("Accelerating")
