@@ -48,8 +48,8 @@ class writer(object):
 
 	def update_vel(self, msg):
 		msg.angular.z *= -1
-		self.send_linear_vel(int(0.5 * 127 * msg.linear.x))
-		self.send_angular_vel(0.5 * 127 * msg.angular.z)
+		self.ramp_linear(int(0.5 * 127 * msg.linear.x))
+		self.ramp_angular(0.5 * 127 * msg.angular.z)
 		self.write()
 
 

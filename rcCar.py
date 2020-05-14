@@ -15,13 +15,11 @@ import rospy
 from geometry_msgs.msg import Twist, Point
 from std_msgs.msg import String
 
-import numpy as np
-
 MAX_SPEED = 1			  # Maximum linear velocity we can command our motors
 MAX_TURN_RATE = 0.2		  # Maximum angular velocity we can command our motors
 
-ACCEL_LINEAR = 0.1
-ACCEL_ANGULAR = 0.05
+ACCEL_LINEAR = 0.02
+ACCEL_ANGULAR = 0.01
 
 CONTROL_PERIOD = rospy.Duration(0.1) # Control period of 10 Hz.
 
@@ -31,12 +29,8 @@ class controller(object):
 		rospy.init_node('controller')
 
 		# current linear and angular velocity
-		self.current_linear = 0
-		self.current_angular = 0
-
-		# desired linear and angular velocity-- may be different from current
-		self.desired_linear = 0
-		self.desired_angular = 0
+		self.linear_vel = 0
+		self.angular_vel = 0
 
 		# Will publish out velocity to writer node
 		# Using topic name "key_vel"
@@ -53,10 +47,13 @@ class controller(object):
 		self.run()
 
 	def key_callback(self, msg):
+		"""
+		The key callback is called whenever a message comes in from the
+		key_teleop node. It will add the key press to the queue.
+		"""
 		# TODO: Figure out what messages will come and how to handle them
 		rospy.loginfo(msg)
 		self.key_queue.append(msg)
-
 		return
 
 	def control_callback(self):
@@ -65,3 +62,50 @@ class controller(object):
 		the motor, but only this callback will send commands to the motor. This
 		way there is no chance of duplicate or conflicting messages
 		"""
+
+		# read through the key_queue and determine if up and down are in there
+		# if they are both there, they cancel each other out, so do nothing.
+		if ("UP" in self.key_queue) and ("DOWN" in self.key_queue):
+			pass
+		# If we want to speed up, use an exponetial response.
+		elif "UP" in self.key_queue:
+			self.linear_vel += ACCEL_LINEAR *
+				(2.71828 ** abs(self.linear_vel))
+		# If we want to slow down, use the same exponential response
+		elif "DOWN" in self.key_queue:
+			self.linear_vel -= ACCEL *
+				(2.71828 ** abs(self.linear_vel))
+		# clamp the desired velocity to the min and max
+		self.linear_vel = min(max(self.linear_vel, -MAX_SPEED), MAX_SPEED)
+
+		# Give the same treatment to the angular velocity.
+		if ("RIGHT" in self.key_queue) and ("LEFT" in self.key_queue):
+			pass
+		elif "UP" in self.key_queue:
+			self.angular_vel += ACCEL_ANGULAR *
+				(2.71828 ** abs(self.angular_vel))
+		elif "DOWN" in self.key_queue:
+			self.angular_vel -= ACCEL_ANGULAR *
+				(2.71828 ** abs(self.angular_vel))
+		self.angular_vel = min(max(self.angular_vel, -MAX_TURN_RATE), MAX_TURN_RATE)
+
+		# Use the "S" key as an emergency stop
+		if "S" in self.key_queue:
+			self.linear_vel = 0
+			self.angular_vel = 0
+
+		# Now publish the velocities.
+		self.cmd_vel_pub.linear.x = self.linear_vel
+		self.cmd_vel_pub.angular.z = self.angular_vel
+		self.cmd_vel_pub.publish(cmd_vel)
+		return
+
+	def run(self):
+		# timers and callbacks are already set up, so just spin.
+		# if spin returns we were interrupted by Ctrl+C or shutdown
+		rospy.spin()
+		return
+
+if __name__ == "__main__":
+	c = controller()
+	controller.run()
