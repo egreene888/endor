@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/odroid/endor/rcCar/catkin_ws/devel/setup.sh
