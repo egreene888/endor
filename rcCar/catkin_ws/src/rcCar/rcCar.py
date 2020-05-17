@@ -69,12 +69,12 @@ class controller(object):
 			pass
 		# If we want to speed up, use an exponetial response.
 		elif "UP" in self.key_queue:
-			self.linear_vel += ACCEL_LINEAR *
-				(2.71828 ** abs(self.linear_vel))
+			self.linear_vel += (ACCEL_LINEAR *
+				(2.71828 ** abs(self.linear_vel)))
 		# If we want to slow down, use the same exponential response
 		elif "DOWN" in self.key_queue:
-			self.linear_vel -= ACCEL *
-				(2.71828 ** abs(self.linear_vel))
+			self.linear_vel -= (ACCEL *
+				(2.71828 ** abs(self.linear_vel)))
 		# clamp the desired velocity to the min and max
 		self.linear_vel = min(max(self.linear_vel, -MAX_SPEED), MAX_SPEED)
 
@@ -82,11 +82,11 @@ class controller(object):
 		if ("RIGHT" in self.key_queue) and ("LEFT" in self.key_queue):
 			pass
 		elif "UP" in self.key_queue:
-			self.angular_vel += ACCEL_ANGULAR *
-				(2.71828 ** abs(self.angular_vel))
+			self.angular_vel += (ACCEL_ANGULAR *
+				(2.71828 ** abs(self.angular_vel)))
 		elif "DOWN" in self.key_queue:
-			self.angular_vel -= ACCEL_ANGULAR *
-				(2.71828 ** abs(self.angular_vel))
+			self.angular_vel -= (ACCEL_ANGULAR *
+				(2.71828 ** abs(self.angular_vel)))
 		self.angular_vel = min(max(self.angular_vel, -MAX_TURN_RATE), MAX_TURN_RATE)
 
 		# Use the "S" key as an emergency stop
