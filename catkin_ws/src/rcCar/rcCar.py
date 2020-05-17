@@ -56,7 +56,7 @@ class controller(object):
 		self.key_queue.append(msg)
 		return
 
-	def control_callback(self):
+	def control_callback(self, timer_event=None):
 		"""
 		The control callback is on a timer, so events will change the state of
 		the motor, but only this callback will send commands to the motor. This
