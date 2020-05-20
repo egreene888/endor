@@ -7,4 +7,5 @@
 # new environment variables
 
 # modified environment variables
-export PWD="/home/odroid/endor/rcCar/catkin_ws/build"
+export PWD="/home/odroid/endor/catkin_ws/build"
+export ROS_PACKAGE_PATH="/home/odroid/endor/rcCar/catkin_ws/src:/home/odroid/endor/catkin_ws/src:/opt/ros/kinetic/share"
