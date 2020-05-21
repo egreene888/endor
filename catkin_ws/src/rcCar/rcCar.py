@@ -12,8 +12,7 @@ to command the desired velocity.
 
 import roslib
 import rospy
-from geometry_msgs.msg import Twist, Point
-from std_msgs.msg import String
+from geometry_msgs.msg import Twist
 
 MAX_SPEED = 1			  # Maximum linear velocity we can command our motors
 MAX_TURN_RATE = 0.2		  # Maximum angular velocity we can command our motors
@@ -62,7 +61,6 @@ class controller(object):
 		the motor, but only this callback will send commands to the motor. This
 		way there is no chance of duplicate or conflicting messages
 		"""
-
 		# read through the key_queue and determine if up and down are in there
 		# if they are both there, they cancel each other out, so do nothing.
 		if ("UP" in self.key_queue) and ("DOWN" in self.key_queue):
@@ -95,8 +93,9 @@ class controller(object):
 			self.angular_vel = 0
 
 		# Now publish the velocities.
-		self.cmd_vel_pub.linear.x = self.linear_vel
-		self.cmd_vel_pub.angular.z = self.angular_vel
+		cmd_vel = Twist()
+		self.cmd_vel.linear.x = self.linear_vel
+		self.cmd_vel.angular.z = self.angular_vel
 		self.cmd_vel_pub.publish(cmd_vel)
 		return
 
