@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+
 """
 writer_serial.py
 
