@@ -13,7 +13,7 @@ to command the desired velocity.
 import roslib
 import rospy
 from geometry_msgs.msg import Twist
-from std_msgs.msg import String 
+from std_msgs.msg import String
 
 MAX_SPEED = 1			  # Maximum linear velocity we can command our motors
 MAX_TURN_RATE = 0.2		  # Maximum angular velocity we can command our motors
@@ -36,8 +36,8 @@ class controller(object):
 		# Using topic name "key_vel"
 		self.cmd_vel_pub = rospy.Publisher('key_vel', Twist)
 
-		# create a subscriber to the key_teleop service.
-		rospy.Subscriber('key_teleop', String , self.key_callback)
+		# # create a subscriber to the key_teleop service.
+		# rospy.Subscriber('key_vel', Twist , self.key_callback, queue_size = 10)
 		# Timer for updating controller
 		rospy.Timer(CONTROL_PERIOD, self.control_callback)
 

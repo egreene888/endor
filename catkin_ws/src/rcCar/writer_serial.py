@@ -50,6 +50,8 @@ class writer(object):
 		msg.angular.z *= -1
 		self.ramp_linear(int(0.5 * 127 * msg.linear.x))
 		self.ramp_angular(0.5 * 127 * msg.angular.z)
+		rospy.loginfo("Linear velocity: {} \t Angular velocity: {}\n".format(
+			msg.linear.x, msg.angular.z))
 		self.write()
 
 
