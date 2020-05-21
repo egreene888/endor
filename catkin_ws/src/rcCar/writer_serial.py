@@ -8,9 +8,9 @@ For use commanding a Sabertooth 2x5 in simplified serial mode.
 Subscribes to the geometry_msgs.msg.Twist ROS topic and uses that to control
 the robot.
 """
+
 import rospy
 from geometry_msgs.msg import Twist
-
 import serial, time
 
 ENABLE_LOGGING = False
