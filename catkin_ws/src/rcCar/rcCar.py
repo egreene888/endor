@@ -13,7 +13,7 @@ to command the desired velocity.
 import roslib
 import rospy
 from geometry_msgs.msg import Twist
-from std_msgs import String 
+from std_msgs.msg import String 
 
 MAX_SPEED = 1			  # Maximum linear velocity we can command our motors
 MAX_TURN_RATE = 0.2		  # Maximum angular velocity we can command our motors
