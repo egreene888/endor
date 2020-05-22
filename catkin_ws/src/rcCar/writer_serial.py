@@ -15,6 +15,7 @@ from geometry_msgs.msg import Twist
 import serial, time
 
 ENABLE_LOGGING = False
+RAMP_TIME = 0.1
 
 class writer(object):
 
@@ -43,17 +44,17 @@ class writer(object):
 
 		# Write initial data
 		self.write()
-		
+
 		# create the rospy node
 		rospy.init_node("Controller")
-		
+
 		# create the rospy subscriber.
 		rospy.Subscriber('key_vel', Twist, self.update_vel)
 
 	def update_vel(self, msg):
 		msg.angular.z *= -1
-		self.ramp_linear(int(0.5 * 127 * msg.linear.x))
-		self.ramp_angular(0.5 * 127 * msg.angular.z)
+		self.ramp_linear(int(0.5 * 127 * msg.linear.x), RAMP_TIME)
+		self.ramp_angular(int(0.5 * 127 * msg.angular.z), RAMP_TIME)
 		rospy.loginfo("Linear velocity: {} \t Angular velocity: {}\n".format(
 			msg.linear.x, msg.angular.z))
 		self.write()
