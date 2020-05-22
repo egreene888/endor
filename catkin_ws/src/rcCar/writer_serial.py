@@ -43,7 +43,10 @@ class writer(object):
 
 		# Write initial data
 		self.write()
-
+		
+		# create the rospy node
+		rospy.init_node("Controller")
+		
 		# create the rospy subscriber.
 		rospy.Subscriber('key_vel', Twist, self.update_vel)
 
