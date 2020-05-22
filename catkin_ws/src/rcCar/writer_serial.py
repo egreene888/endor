@@ -1,5 +1,4 @@
 #! /usr/bin/env python
-
 """
 writer_serial.py
 
@@ -161,19 +160,25 @@ class writer(object):
 	def run(self):
 		rospy.spin()
 
+	def test(self):
+		print("Accelerating")
+		self.ramp_angular(64, 2)
+		print("Constant velocity")
+		time.sleep(2)
+
+		print("Decelerating")
+		self.ramp_angular(0, 2)
+		time.sleep(2)
+
+		print("Stopping")
+		self.stop()
+
 def main():
-	print("Accelerating")
-	controller = writer()
-	controller.ramp_angular(64, 2)
-	print("Constant velocity")
-	time.sleep(2)
-
-	print("Decelerating")
-	controller.ramp_angular(0, 2)
-	time.sleep(2)
-
-	print("Stopping")
-	controller.stop()
+	try:
+		controller = writer()
+		controller.run()
+	except rospy.ROSInterruptException:
+		pass
 
 if __name__ == "__main__":
 	main()
