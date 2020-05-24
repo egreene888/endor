@@ -15,7 +15,7 @@ from geometry_msgs.msg import Twist
 import serial, time
 
 ENABLE_LOGGING = False
-RAMP_TIME = 0.1
+RAMP_TIME = 2
 
 class writer(object):
 
@@ -39,8 +39,6 @@ class writer(object):
 		# initialize the values of angular_vel and linear_vel
 		self.linear_vel = 0
 		self.angular_vel = 0
-		self.right_vel = 0
-		self.left_vel = 0
 
 		# Write initial data
 		self.write()
