@@ -32,6 +32,9 @@ class controller(object):
 		self.linear_vel = 0
 		self.angular_vel = 0
 
+		# A key_queue to keep track of the inputs. 
+		self.key_queue = []
+
 		# create a subscriber to get the input from the key_teleop node.
 		self.key_vel_sub = rospy.Subscriber('key_vel', Twist, self.key_callback,
 			queue_size = 10)
@@ -82,7 +85,7 @@ class controller(object):
 				(2.71828 ** abs(self.linear_vel)))
 		# If we want to slow down, use the same exponential response
 		elif "DOWN" in self.key_queue:
-			self.linear_vel -= (ACCEL *
+			self.linear_vel -= (ACCEL_ANGULAR *
 				(2.71828 ** abs(self.linear_vel)))
 		# clamp the desired velocity to the min and max
 		self.linear_vel = min(max(self.linear_vel, -MAX_SPEED), MAX_SPEED)
@@ -105,8 +108,8 @@ class controller(object):
 
 		# Now publish the velocities.
 		cmd_vel = Twist()
-		self.cmd_vel.linear.x = self.linear_vel
-		self.cmd_vel.angular.z = self.angular_vel
+		cmd_vel.linear.x = self.linear_vel
+		cmd_vel.angular.z = self.angular_vel
 		self.cmd_vel_pub.publish(cmd_vel)
 		return
 
