@@ -29,11 +29,15 @@ class writer(object):
 				parity = serial.PARITY_NONE,
 				stopbits = serial.STOPBITS_ONE)
 		except serial.serialutil.SerialException: # should work on mac
-			self.port = serial.Serial('/dev/tty.usbserial-A6033KY3',
-				baudrate = 9600,
-				bytesize = serial.EIGHTBITS,
-				parity = serial.PARITY_NONE,
-				stopbits = serial.STOPBITS_ONE)
+			try:
+				self.port = serial.Serial('/dev/tty.usbserial-A6033KY3',
+					baudrate = 9600,
+					bytesize = serial.EIGHTBITS,
+					parity = serial.PARITY_NONE,
+					stopbits = serial.STOPBITS_ONE)
+			except serial.serialutil.SerialException as err:
+				rospy.logerr("Could not open Port: {}".format(err))
+				raise
 
 		# initialize the values of angular_vel and linear_vel
 		self.linear_vel = 0
@@ -46,7 +50,7 @@ class writer(object):
 		rospy.init_node("Controller")
 
 		# create the rospy subscriber.
-		rospy.Subscriber('key_vel', Twist, self.update_vel)
+		rospy.Subscriber('cmd_vel', Twist, self.update_vel)
 
 	def update_vel(self, msg):
 		self.send_linear_vel(int(0.5 * 127 * msg.linear.x))

@@ -37,7 +37,7 @@ class controller(object):
 			queue_size = 10)
 
 		# create a publisher to send the output to the writer_serial node.
-		self.cmd_vel_pub = rospy.Publisher('key_vel', Twist)
+		self.cmd_vel_pub = rospy.Publisher('cmd_vel', Twist)
 
 		# Create a timer for updating the commanded velocities.
 		rospy.Timer(CONTROL_PERIOD, self.control_callback)
