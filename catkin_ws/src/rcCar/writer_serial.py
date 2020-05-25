@@ -37,7 +37,7 @@ class writer(object):
 					stopbits = serial.STOPBITS_ONE)
 			except serial.serialutil.SerialException as err:
 				rospy.logerr("Could not open Port: {}".format(err))
-				raise
+				raise rospy.ROSInterruptException(err)
 
 		# initialize the values of angular_vel and linear_vel
 		self.linear_vel = 0
