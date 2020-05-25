@@ -32,18 +32,17 @@ class controller(object):
 		self.linear_vel = 0
 		self.angular_vel = 0
 
-		# Will publish out velocity to writer node
-		# Using topic name "key_vel"
+		# create a subscriber to get the input from the key_teleop node.
+		self.key_vel_sub = rospy.Subscriber('key_vel', Twist, self.key_callback,
+			queue_size = 10)
+
+		# create a publisher to send the output to the writer_serial node.
 		self.cmd_vel_pub = rospy.Publisher('key_vel', Twist)
 
-		# # create a subscriber to the key_teleop service.
-		# rospy.Subscriber('key_vel', Twist , self.key_callback, queue_size = 10)
-		# Timer for updating controller
+		# Create a timer for updating the commanded velocities.
 		rospy.Timer(CONTROL_PERIOD, self.control_callback)
 
-		# create a key_queue which will keep track of all the keys that have
-		# been pressed since the last control callback
-		self.key_queue = []
+		# Nothing left to do but spin.
 		self.run()
 
 	def key_callback(self, msg):
@@ -51,9 +50,20 @@ class controller(object):
 		The key callback is called whenever a message comes in from the
 		key_teleop node. It will add the key press to the queue.
 		"""
-		# TODO: Figure out what messages will come and how to handle them
-		rospy.loginfo(msg)
-		self.key_queue.append(msg)
+
+		# Parse the msg.linear.x and add strings to the key_queue accordingly.
+		if msg.linear.x > 0.01: # floating point error defense
+			# This condition means the "UP" key is pressed.
+			self.key_queue.append("UP")
+		elif msg.linear.x < 0.01:
+			self.key_queue.append("DOWN")
+
+		# do the same for the msg.angular.z
+		if msg.angular.z > 0.01:
+			# Positive angular velocity corresponds to a left turn.
+			self.key_queue.append("LEFT")
+		elif msg.angular.z < 0.01:
+			self.key_queue.append("RIGHT")
 		return
 
 	def control_callback(self, timer_event=None):
