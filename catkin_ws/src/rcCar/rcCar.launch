@@ -6,7 +6,6 @@
 		rosrun rcCar rcCar.py
 		rosrun rcCar writer_serial.py
 	-->
-	<node name="key_teleop" pkg="key_teleop" type="key_teleop.py" />
 	<node name="controller" pkg="rcCar" type="rcCar.py" />
 	<node name="writer" pkg="rcCar" type="writer_serial.py" />
 </launch>
