@@ -53,19 +53,18 @@ class controller(object):
 		The key callback is called whenever a message comes in from the
 		key_teleop node. It will add the key press to the queue.
 		"""
-
 		# Parse the msg.linear.x and add strings to the key_queue accordingly.
 		if msg.linear.x > 0.01: # floating point error defense
 			# This condition means the "UP" key is pressed.
 			self.key_queue.append("UP")
-		elif msg.linear.x < 0.01:
+		elif msg.linear.x < -0.01:
 			self.key_queue.append("DOWN")
 
 		# do the same for the msg.angular.z
 		if msg.angular.z > 0.01:
 			# Positive angular velocity corresponds to a left turn.
 			self.key_queue.append("LEFT")
-		elif msg.angular.z < 0.01:
+		elif msg.angular.z < -0.01:
 			self.key_queue.append("RIGHT")
 		return
 
@@ -105,15 +104,21 @@ class controller(object):
 		if "S" in self.key_queue:
 			self.linear_vel = 0
 			self.angular_vel = 0
-
+		
 		# Now publish the velocities.
 		cmd_vel = Twist()
 		cmd_vel.linear.x = self.linear_vel
 		cmd_vel.angular.z = self.angular_vel
 		
 		# Add some logging
+		rospy.loginfo(self.key_queue)
 		rospy.loginfo("Linear: {} \t Angular:{}".format(cmd_vel.linear.x, 
 			cmd_vel.angular.z))
+		
+		# clear the key_queue so commands don't get repeated.
+		self.key_queue = []
+
+		# publish the velocity we've commanded.
 		self.cmd_vel_pub.publish(cmd_vel)
 		return
 
