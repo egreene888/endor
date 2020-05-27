@@ -32,7 +32,7 @@ class controller(object):
 		self.linear_vel = 0
 		self.angular_vel = 0
 
-		# A key_queue to keep track of the inputs. 
+		# A key_queue to keep track of the inputs.
 		self.key_queue = []
 
 		# create a subscriber to get the input from the key_teleop node.
@@ -75,46 +75,59 @@ class controller(object):
 		way there is no chance of duplicate or conflicting messages
 		"""
 		# read through the key_queue and determine if up and down are in there
-		# if they are both there, they cancel each other out, so do nothing.
+		# if they are both there, they cancel each other out, so let
+		# artificial intertia slow the robot down.
 		if ("UP" in self.key_queue) and ("DOWN" in self.key_queue):
-			pass
-		# If we want to speed up, use an exponetial response.
+			new_linear_vel = 0
+		# If we want to speed up,
 		elif "UP" in self.key_queue:
-			self.linear_vel += (ACCEL_LINEAR *
-				(2.71828 ** abs(self.linear_vel)))
-		# If we want to slow down, use the same exponential response
+			new_linear_vel = 1
+		# If we want to slow down,
 		elif "DOWN" in self.key_queue:
-			self.linear_vel -= (ACCEL_ANGULAR *
-				(2.71828 ** abs(self.linear_vel)))
+			new_linear_vel = -1
+		else:
+			new_linear_vel = 0
+
+		linear_weight = 0.1
+		# The linear_vel is the moving average over the last few control periods
+		self.linear_vel = self.linear_vel * (1 - linear_weight) + \
+			new_linear_vel * linear_weight
 		# clamp the desired velocity to the min and max
 		self.linear_vel = min(max(self.linear_vel, -MAX_SPEED), MAX_SPEED)
 
 		# Give the same treatment to the angular velocity.
 		if ("RIGHT" in self.key_queue) and ("LEFT" in self.key_queue):
-			pass
-		elif "UP" in self.key_queue:
-			self.angular_vel += (ACCEL_ANGULAR *
-				(2.71828 ** abs(self.angular_vel)))
-		elif "DOWN" in self.key_queue:
-			self.angular_vel -= (ACCEL_ANGULAR *
-				(2.71828 ** abs(self.angular_vel)))
+			new_angular_vel = 0
+		elif "LEFT" in self.key_queue:
+			new_angular_vel = 1
+		elif "RIGHT" in self.key_queue:
+			new_angular_vel = -1
+		else:
+			new_angular_vel = 0
+
+		angular_weight = 0.1
+		# The angular vel is the moving average over the last ten control
+		# periods
+		self.angular_vel = self.angular_vel * (1 - angular_weight)  + \
+			new_angular_vel * angular_weight
+
+		# clamp the velocity to the desired min and max. 
 		self.angular_vel = min(max(self.angular_vel, -MAX_TURN_RATE), MAX_TURN_RATE)
 
 		# Use the "S" key as an emergency stop
 		if "S" in self.key_queue:
 			self.linear_vel = 0
 			self.angular_vel = 0
-		
+
 		# Now publish the velocities.
 		cmd_vel = Twist()
 		cmd_vel.linear.x = self.linear_vel
 		cmd_vel.angular.z = self.angular_vel
-		
+
 		# Add some logging
-		rospy.loginfo(self.key_queue)
-		rospy.loginfo("Linear: {} \t Angular:{}".format(cmd_vel.linear.x, 
+		rospy.loginfo("Linear: {} \t Angular:{}".format(cmd_vel.linear.x,
 			cmd_vel.angular.z))
-		
+
 		# clear the key_queue so commands don't get repeated.
 		self.key_queue = []
 
